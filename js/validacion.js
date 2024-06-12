@@ -5,9 +5,12 @@ function validar() {
     var retorno_password = validar_password ();
     var retorno_website = validar_website();
     var retorno_hobbies = validar_hobbies();
+    var retorno_address = validar_address();
     
-    return retorno_comuna && retorno_username && retorno_telefono && retorno_password && retorno_website && retorno_hobbies;
+    return retorno_comuna && retorno_username && retorno_telefono && retorno_password && retorno_website && retorno_hobbies && retorno_address;
 }
+
+//// Validación de la comuna
 
 function validar_comuna () {
     var select_comuna = document.getElementById("select-comuna");
@@ -25,7 +28,7 @@ function validar_comuna () {
 }
 
 
-/// VALIDACION DE USUARIO ///
+//// Validación del nombre de usuario
 
 function validar_username() {
     var input_username = document.getElementById("usernameInput");
@@ -38,7 +41,7 @@ function validar_username() {
         return false;
     }
 
-    ///// QUE EL PRIMER CARACTER QUE SEA UNA LETRA /////
+    // Verifica que el username comience con una letra
 
     var firstChar = username.charAt(0);
     if (!(firstChar >= 'A' && firstChar <= 'Z') && !(firstChar >= 'a' && firstChar <= 'z')) {
@@ -47,7 +50,7 @@ function validar_username() {
         return false;
     }
 
-    ///// LOS CARACTERES QUE SEAN LETRAS O NUMEROS /////
+    // Verifica que el username no tenga caracteres especiales
 
     for (var i = 0; i < username.length; i++) {
         var char = username.charAt(i);
@@ -58,7 +61,7 @@ function validar_username() {
         }
     }
 
-    ///// SI EXISTEN DIGITOS, QUE SOLO ESTEN AL FINAL /////
+    // Verifica que no hayan digitos al principio del username
 
     var hasNumber = false;
     for (var i = 1; i < username.length; i++) {
@@ -74,8 +77,8 @@ function validar_username() {
     return true;
 }
 
+//// Validación número de teléfono
 
-/// VALIDACION DE NUM_TELEFONO ///
 function validar_telefono() {
     var telefono = document.getElementById('phoneInput').value;
     var div_error_telefono = document.getElementById('error-telefono');
@@ -86,7 +89,7 @@ function validar_telefono() {
         return false;
     }
 
-///// QUE CONTENGA 9 DIGITOS /////
+    // Verificar que tenga 9 digitos
 
     if (telefono.length !== 9) {
         div_error_telefono.innerText = 'El numero de teléfono debe tener 9 digitos.';
@@ -94,7 +97,7 @@ function validar_telefono() {
         return false;
     }
 
-///// SOLO CONTIENE NUMEROS /////
+    // Verificar que solo tenga números
 
     for (var i = 0; i < telefono.length; i++) {
         var char = telefono.charAt(i);
@@ -108,15 +111,23 @@ function validar_telefono() {
 }
 
 
-/// VALIDAR CONTRASEÑA ///
+//// Validar contraseña
+
 function validar_password() {
     var input_username = document.getElementById("usernameInput").value;
     var password = document.getElementById('inputPasswd').value;
     var confirmPassword = document.getElementById('inputPasswd2').value;
     var div_error_password = document.getElementById('error-password');
     var div_error_confirm_password = document.getElementById('error-confirm-password');
+    
     div_error_password.innerHTML = "";
     div_error_confirm_password.innerHTML = "";
+
+    if (password !== confirmPassword) {
+        div_error_confirm_password.innerText = 'Las contraseñas no coinciden.';
+        div_error_confirm_password.className = "text-danger small mt-1";
+        return false;
+    }
 
     if (password.length < 3 || password.length > 6) {
         div_error_password.innerText = 'La contraseña debe tener entre 3 y 6 caracteres.';
@@ -130,15 +141,26 @@ function validar_password() {
         return false;
     }
 
-    if (password !== confirmPassword) {
-        div_error_confirm_password.innerText = 'Las contraseñas no coinciden.';
-        div_error_confirm_password.className = "text-danger small mt-1";
-        return false;
-    }
-
     return true;
 }
 
+
+//// Validación de la dirección
+
+function validar_address() {
+    var address = document.getElementById("inputAddress").value;
+    var div_error_address = document.getElementById("error-address");
+    div_error_address.innerHTML = "";
+
+    if (address === "") {
+        div_error_address.innerHTML = "Debe ingresar una dirección";
+        div_error_address.className = "text-danger small mt-1"
+        return false
+    }
+    return true
+}
+
+//// Validación sitio web
 
 function validar_website() {
     var website = document.getElementById("website").value;
@@ -151,12 +173,15 @@ function validar_website() {
         return false;
     }
 
-    if (!website.startsWith("http://") && !website.startsWith("https://")) {
-        div_error_website.innerHTML = "La URL debe comenzar con http:// o https://.";
+    // Verifica la URL
+
+    if (!website.startsWith("http://") && !website.startsWith("https://") && !website.startsWith("www")) {
+        div_error_website.innerHTML = "La URL debe comenzar con http:// o https:// o www.";
         div_error_website.className = "text-danger small mt-1";
         return false;
     }
 
+    // Verifica la URL
     if (website.indexOf(".") === -1) {
         div_error_website.innerHTML = "La URL debe contener un punto (.)";
         div_error_website.className = "text-danger small mt-1";
@@ -168,7 +193,10 @@ function validar_website() {
 
 
 // Validar aficiones
+
 var hobbyList = []; // Var global
+
+// Agregar una afición a la lista
 
 function agregar_hobby() {
     var hobby = document.getElementById("hobby").value;
@@ -188,6 +216,7 @@ function agregar_hobby() {
         return true;
     }
 }
+
 
 
 function validar_hobbies() {
