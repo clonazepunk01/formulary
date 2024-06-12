@@ -3,11 +3,12 @@ function validar() {
     var retorno_username = validar_username ();
     var retorno_telefono = validar_telefono ();
     var retorno_password = validar_password ();
+    var retorno_correo = validar_correo();
     var retorno_website = validar_website();
     var retorno_hobbies = validar_hobbies();
     var retorno_address = validar_address();
     
-    return retorno_comuna && retorno_username && retorno_telefono && retorno_password && retorno_website && retorno_hobbies && retorno_address;
+    return retorno_comuna && retorno_username && retorno_telefono && retorno_password && retorno_correo && retorno_website && retorno_hobbies && retorno_address;
 }
 
 //// Validación de la comuna
@@ -83,30 +84,39 @@ function validar_telefono() {
     var telefono = document.getElementById('phoneInput').value;
     var div_error_telefono = document.getElementById('error-telefono');
     div_error_telefono.innerHTML = "";
+
     if (telefono.trim() === '') {
-        div_error_telefono.innerText = 'El numero de teléfono es obligatorio.';
+        div_error_telefono.innerText = 'El número de teléfono es obligatorio.';
         div_error_telefono.className = "text-danger small mt-1";
         return false;
     }
 
-    // Verificar que tenga 9 digitos
-
-    if (telefono.length !== 9) {
-        div_error_telefono.innerText = 'El numero de teléfono debe tener 9 digitos.';
-        div_error_telefono.className = "text-danger small mt-1";
-        return false;
-    }
-
-    // Verificar que solo tenga números
-
+    // Verifica si el número contiene caracteres no permitidos
     for (var i = 0; i < telefono.length; i++) {
         var char = telefono.charAt(i);
-        if (!(char >= '0' && char <= '9')) {
-            div_error_telefono.innerText = 'El numero de teléfono solo puede contener numeros.';
+        if (char !== '+' && (char < '0' || char > '9')) {
+            div_error_telefono.innerText = 'El número de teléfono solo puede contener números.';
             div_error_telefono.className = "text-danger small mt-1";
             return false;
         }
     }
+
+    // Verifica si empieza con +569
+    if (telefono.startsWith("+569")) {
+        if (telefono.length !== 12) { // +569 seguido de 8 dígitos
+            div_error_telefono.innerText = 'El número de teléfono debe ser +569 seguido de 8 dígitos.';
+            div_error_telefono.className = "text-danger small mt-1";
+            return false;
+        }
+    } else {
+        // Verifica que el número tenga 9 dígitos
+        if (telefono.length !== 9) {
+            div_error_telefono.innerText = 'El número de teléfono debe tener 9 dígitos.';
+            div_error_telefono.className = "text-danger small mt-1";
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -143,6 +153,28 @@ function validar_password() {
 
     return true;
 }
+
+//// Validación de correo electrónico
+
+function validar_correo() {
+    var correo = document.getElementById ("emailInput").value;
+    var div_error_correo = document.getElementById("error-email");
+    var pos_arroba = correo.indexOf("@");
+    console.log(pos_arroba);
+    var pos_punto = correo.lastIndexOf(".");
+    var arr_correo = correo.split(".");
+    var ext = arr_correo [arr_correo.length - 1];
+    console.log (ext);
+    if (pos_arroba > 0 && pos_punto > pos_arroba && (ext.length > 1 && ext.length <= 3)) {
+        div_error_correo.innerHTML = "";
+        return true;
+    } else {
+        div_error_correo.innerHTML = "El correo no tiene el formato correcto ";
+        div_error_correo.className = "text-danger small mt-1"
+        return false;
+    }
+}
+
 
 
 //// Validación de la dirección
